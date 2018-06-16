@@ -1,4 +1,4 @@
-    Project Name: Password Manager
+    <b>Project Name: Password Manager</b>
 
 The Password Manager application will allow the user to enter
 and store information on each account they have and save it to a
@@ -11,8 +11,8 @@ trying to open the file on your computer. This project was created
 simply for the challenge and not meant to be actually used
 commercially.
 
-Author:
+<b>Author:</b>
 Graham Wilson
 
-Date:
+<b>Date:</b>
 2018/06/15
