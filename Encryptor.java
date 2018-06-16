@@ -1,8 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+Encryptor.java
+Author: Graham Wilson
+Date: June 16th, 2018
+*/
 
 /*Package*/
 package encryptor;
@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 
 /*Encryptor Class*/
 public class Encryptor extends JFrame implements ActionListener, ItemListener{
@@ -84,7 +83,7 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
     private String fileName;
     
     /*Encryption variables*/
-    private char[] passcode = new char[16];
+    private String keyCode;
     
     /*Variables to store the activities and key words*/
     private ArrayList<Profile> profileList = new ArrayList<Profile>();
@@ -299,7 +298,10 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
                 titlePanel.setVisible(true);
                 saveAsFile.setEnabled(true);
                 input = null;
-                createCode();
+                //createCode();
+                //keyCode = getCode();
+                keyCode = "test";
+                System.out.print(keyCode);
             }
         }
         /*If the 'Open' button is pressed, open an existing .enc file*/
@@ -396,7 +398,7 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
                 while (profileList.size() > i){
                     p = profileList.get(i);
                     //bw.write(p.getAccount() + "\r\n" + p.getUsername() + "\r\n" + p.getPassword() + "\r\n" + p.getNotes() + "\r\n\r\n");
-                    bw.write(encrypt(p.getAccount(), "test") + "\r\n" + encrypt(p.getUsername(), "test") + "\r\n" + encrypt(p.getPassword(), "test") + "\r\n" + encrypt(p.getNotes(), "test") + "\r\n\r\n");
+                    bw.write(encrypt(p.getAccount(), keyCode) + "\r\n" + encrypt(p.getUsername(), keyCode) + "\r\n" + encrypt(p.getPassword(), keyCode) + "\r\n" + encrypt(p.getNotes(), keyCode) + "\r\n\r\n");
                     //System.out.print(encrypt(p.getAccount(), "test") + "\r\n" + encrypt(p.getUsername(), "test") + "\r\n" + encrypt(p.getPassword(), "test") + "\r\n" + encrypt(p.getNotes(), "test") + "\r\n\r\n" );
                     i++;
                 }
@@ -428,6 +430,8 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
         
         /*If a file is selected*/
         if (result == JFileChooser.APPROVE_OPTION){
+            //keyCode = getCode();
+            keyCode = "test";
             try{
                 /*Set UI varaibles to properly display the opened files name and reset global varaibles to empty states*/
                 filePath = openChooser.getSelectedFile().toString();
@@ -452,10 +456,10 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
                 i = 0;
                 while(profileCount > i){
                     /*Decrypt the data and store it*/
-                    acc = encrypt(br.readLine(), "test");
-                    user = encrypt(br.readLine(), "test");
-                    pass = encrypt(br.readLine(), "test");
-                    note = encrypt(br.readLine(), "test");
+                    acc = encrypt(br.readLine(), keyCode);
+                    user = encrypt(br.readLine(), keyCode);
+                    pass = encrypt(br.readLine(), keyCode);
+                    note = encrypt(br.readLine(), keyCode);
                     br.readLine();
                     p = new Profile(acc, user, pass, note);
                     profileList.add(p);
@@ -477,29 +481,16 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
         }
     }
     
-    /**/
-    public char[] createCode(){
-        char[] code = new char[15];
-        int res;
-        Random r = new Random();
-        
-        for (int i = 0 ; i < 15 ; i++){
-            res = r.nextInt(90) + 32;
-            passcode[i] = (char)res;
-        }
-        passcode[15] = '\0';
-        displayCode(code);
+    public String getCode(){
+        String code = "";
+        String in;
+        do{
+            in = (String)JOptionPane.showInputDialog(this, "Enter a key for the file: ", "Key Creation", JOptionPane.PLAIN_MESSAGE, null, null, "");
+            if (in != null && (in.length() > 0)){
+                code = in;
+            }
+        } while (in == null || (in.length() <= 0));
         return code;
-    }
-    
-    /**/
-    public void displayCode(char [] code){
-        String str = new String(code);
-        System.out.println(str + "\r\n");
-        for (int i = 0 ; i < 15 ; i++){
-            System.out.print(passcode[i]);
-        }
-        JOptionPane.showMessageDialog(this, "Here is your access code. Make sure to copy it:\r\n\r\n " + String.valueOf(code));
     }
     
     /*Encrypt or decrypt the string 'text' using the string 'key' and return it*/
@@ -509,9 +500,9 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
         char[] textArr = text.toCharArray();
         char[] keyArr = key.toCharArray();
         int a, b, res;
-        
+        int j = 0;
         /*Loop through each char in the 'text' and use XOR cipher with the next 'key' char*/
-        for (int i = 0, j = 0 ; i < lenText ; i++){
+        for (int i = 0; i < lenText ; i++){
             /*If the end of the 'key' string is reached loop around to start*/
             if (j >= lenKey)
                 j = 0;
@@ -520,7 +511,7 @@ public class Encryptor extends JFrame implements ActionListener, ItemListener{
             /*XOR bit shift*/
             res = a ^ b;
             textArr[i] = (char)(res);
-            j++;
+            j += 1;
         }
         /*Create the new string and return it*/
         text = new String(textArr);
