@@ -1,4 +1,4 @@
-    <b>Project Name: Password Manager</b>
+    Project Name: Password Manager
 
 The Password Manager application will allow the user to enter
 and store information on each account they have and save it to a
